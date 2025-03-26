@@ -15,6 +15,8 @@ app.get('/clientes', async (req, res) => {
     return res.status(400).send('Número de telefone não fornecido');
   }
 
+  console.log('Número recebido:', numero); // Para depurar o número recebido
+
   try {
     // Fazendo uma requisição para obter o conteúdo do arquivo clientes.txt
     const response = await axios.get(clientesFileUrl);
@@ -39,8 +41,14 @@ app.get('/clientes', async (req, res) => {
       return clientData;
     });
 
-    // Buscar o cliente pelo número de telefone
-    const cliente = clients.find(c => c.Numero === numero);
+    // Depuração: Imprimir todos os números para ver como estão sendo lidos
+    console.log('Clientes carregados:', clients);
+
+    // Remover espaços em branco ou caracteres extras nos números
+    const cleanedNumero = numero.replace(/\s+/g, '').trim();  // Remover espaços e caracteres extras
+
+    // Buscar o cliente pelo número de telefone (comparando após limpar o número)
+    const cliente = clients.find(c => c.Numero.replace(/\s+/g, '').trim() === cleanedNumero);
 
     if (cliente) {
       // Se o cliente for encontrado, retornar os dados (Nome e CPF, por exemplo)
