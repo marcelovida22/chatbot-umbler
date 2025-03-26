@@ -4,8 +4,8 @@ const axios = require('axios');
 const app = express();
 const port = 3000;
 
-// URL do arquivo 'clientes.txt' no seu repositório GitHub
-const clientesFileUrl = '';
+// URL do arquivo 'clientes.txt' no seu repositório GitHub (agora usando a URL raw)
+const clientesFileUrl = 'https://raw.githubusercontent.com/marcelovida22/chatbot-umbler/main/clientes.txt';
 
 // Rota GET para retornar os dados dos clientes
 app.get('/clientes', async (req, res) => {
