@@ -7,6 +7,11 @@ const port = 3000;
 // URL do arquivo 'clientes.txt' no seu repositório GitHub
 const clientesFileUrl = 'https://raw.githubusercontent.com/marcelovida22/chatbot-umbler/main/clientes.txt';  // Usando a URL raw
 
+// Função para normalizar o número de telefone (remover sinais de '+' e espaços)
+function normalizePhoneNumber(phoneNumber) {
+  return phoneNumber.replace(/\D/g, ''); // Remove qualquer coisa que não seja número (incluindo "+" e espaços)
+}
+
 // Rota GET para retornar os dados dos clientes
 app.get('/clientes', async (req, res) => {
   const numero = req.query.numero; // Obtendo o número de telefone enviado pelo UmblerTalk
@@ -14,8 +19,6 @@ app.get('/clientes', async (req, res) => {
   if (!numero) {
     return res.status(400).send('Número de telefone não fornecido');
   }
-
-  console.log('Número recebido:', numero); // Para depurar o número recebido
 
   try {
     // Fazendo uma requisição para obter o conteúdo do arquivo clientes.txt
@@ -41,14 +44,8 @@ app.get('/clientes', async (req, res) => {
       return clientData;
     });
 
-    // Depuração: Imprimir todos os números para ver como estão sendo lidos
-    console.log('Clientes carregados:', clients);
-
-    // Remover espaços em branco ou caracteres extras nos números
-    const cleanedNumero = numero.replace(/\s+/g, '').trim();  // Remover espaços e caracteres extras
-
-    // Buscar o cliente pelo número de telefone (comparando após limpar o número)
-    const cliente = clients.find(c => c.Numero.replace(/\s+/g, '').trim() === cleanedNumero);
+    // Buscar o cliente pelo número de telefone (normalizando ambos os números)
+    const cliente = clients.find(c => normalizePhoneNumber(c.Numero) === normalizePhoneNumber(numero));
 
     if (cliente) {
       // Se o cliente for encontrado, retornar os dados (Nome e CPF, por exemplo)
