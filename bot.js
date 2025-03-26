@@ -4,20 +4,23 @@ const axios = require('axios');
 const app = express();
 const port = 3000;
 
+// Middleware para processar JSON no corpo das requisições
+app.use(express.json());
+
 // URL do arquivo 'clientes.txt' no seu repositório GitHub
-const clientesFileUrl = 'https://raw.githubusercontent.com/marcelovida22/chatbot-umbler/main/clientes.txt';  // Usando a URL raw
+const clientesFileUrl = 'https://raw.githubusercontent.com/marcelovida22/chatbot-umbler/main/clientes.txt';
 
 // Função para normalizar o número de telefone (remover sinais de '+' e espaços)
 function normalizePhoneNumber(phoneNumber) {
-  return phoneNumber.replace(/\D/g, ''); // Remove qualquer coisa que não seja número (incluindo "+" e espaços)
+  return phoneNumber.replace(/\D/g, ''); // Remove tudo que não for número (incluindo "+" e espaços)
 }
 
-// Rota GET para retornar os dados dos clientes
-app.get('/clientes', async (req, res) => {
-  const numero = req.query.numero; // Obtendo o número de telefone enviado pelo UmblerTalk
+// Rota POST para buscar cliente pelo número de telefone
+app.post('/clientes', async (req, res) => {
+  const { numero } = req.body; // Obtendo o número do telefone do corpo da requisição
 
   if (!numero) {
-    return res.status(400).send('Número de telefone não fornecido');
+    return res.status(400).json({ error: 'Número de telefone não fornecido' });
   }
 
   try {
@@ -59,7 +62,7 @@ app.get('/clientes', async (req, res) => {
     }
   } catch (error) {
     console.error('Erro ao obter o arquivo:', error);
-    res.status(500).send('Erro ao obter os dados dos clientes');
+    res.status(500).json({ error: 'Erro ao obter os dados dos clientes' });
   }
 });
 
