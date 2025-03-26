@@ -4,37 +4,32 @@ const axios = require('axios');
 const app = express();
 const port = 3000;
 
-// Middleware para processar JSON no corpo das requisições
-app.use(express.json());
+app.use(express.json()); // 🔥 Middleware para interpretar JSON
 
 // URL do arquivo 'clientes.txt' no seu repositório GitHub
 const clientesFileUrl = 'https://raw.githubusercontent.com/marcelovida22/chatbot-umbler/main/clientes.txt';
 
 // Função para normalizar o número de telefone (remover sinais de '+' e espaços)
 function normalizePhoneNumber(phoneNumber) {
-  return phoneNumber.replace(/\D/g, ''); // Remove tudo que não for número (incluindo "+" e espaços)
+  return phoneNumber.replace(/\D/g, ''); // Remove qualquer coisa que não seja número (incluindo "+" e espaços)
 }
 
-// Rota POST para buscar cliente pelo número de telefone
+// Rota POST para retornar os dados dos clientes
 app.post('/clientes', async (req, res) => {
-  const { numero } = req.body; // Obtendo o número do telefone do corpo da requisição
+  const { Numero } = req.body; // Obtendo o número do corpo da requisição
 
-  if (!numero) {
+  if (!Numero) {
     return res.status(400).json({ error: 'Número de telefone não fornecido' });
   }
 
   try {
     // Fazendo uma requisição para obter o conteúdo do arquivo clientes.txt
     const response = await axios.get(clientesFileUrl);
-
-    // Processar o conteúdo do arquivo
     const data = response.data;
 
     // Dividir os dados por cliente (clientes separados por duas quebras de linha)
     const clients = data.split('\n\n').map(client => {
       const lines = client.split('\n');
-
-      // Criar um objeto para armazenar as informações do cliente
       let clientData = {};
 
       lines.forEach(line => {
@@ -48,16 +43,14 @@ app.post('/clientes', async (req, res) => {
     });
 
     // Buscar o cliente pelo número de telefone (normalizando ambos os números)
-    const cliente = clients.find(c => normalizePhoneNumber(c.Numero) === normalizePhoneNumber(numero));
+    const cliente = clients.find(c => normalizePhoneNumber(c.Numero) === normalizePhoneNumber(Numero));
 
     if (cliente) {
-      // Se o cliente for encontrado, retornar os dados (Nome e CPF, por exemplo)
       res.json({
         nome: cliente.Nome,
         cpf: cliente.CPF
       });
     } else {
-      // Se o cliente não for encontrado
       res.status(404).json({ error: 'Cliente não encontrado' });
     }
   } catch (error) {
