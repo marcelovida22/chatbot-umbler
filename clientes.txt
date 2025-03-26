@@ -1,11 +1,14 @@
-<<<<<<< HEAD
 Cliente: 1
 Numero:+5511942216152
 Nome: Umbler Chatbot
 CPF: 000-XXX-XXX-XX
-=======
-Cliente: 1
-Numero:+5511942216152
-Nome: Umbler Chatbot
-CPF: 000-XXX-XXX-XX
->>>>>>> fdea61019f1f2a395b1659b562324ceedd8b1ecd
+
+Cliente: 2
+Numero:+5511942216153
+Nome: João da Silva
+CPF: 123-456-789-01
+
+Cliente: 3
+Numero:+5511942216154
+Nome: Maria Oliveira
+CPF: 987-654-321-00
